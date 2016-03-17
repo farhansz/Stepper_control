@@ -119,12 +119,16 @@ void loop() {
        }
      }
      else if(strip==actuator_pos_fw){
-     test2(actuator_pos_fw,1000); //test2 for actuator 1
-     //test3(actuator_pos_fw,1000); // test3 for actuator 2
+     while (true){
+       test2(actuator_pos_fw,1000); //test2 for actuator 1
+       //test3(actuator_pos_fw,1000); // test3 for actuator 2
+       }
      }
      else if(strip==actuator_pos_bw){
-     test2(actuator_pos_bw,1000);
-     //test3(actuator_pos_bw,1000);
+      while (true){
+       test2(actuator_pos_bw,1000);
+       //test3(actuator_pos_bw,1000);
+        }
      }
      else{
      //do nothing
