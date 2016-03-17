@@ -4,10 +4,10 @@ int in1Pin = 12;
 int in2Pin = 11;
 int in3Pin = 10;
 int in4Pin = 9;
-int actuator1[] = {53, 52};
-int actuator2[] = {46, 47};
+int actuator1[] = {53, 52}; // the one that goes up and down
+int actuator2[] = {46, 47}; // the one that pushes
 
-int steps = 10; //10
+int steps = 10; //Default value is 10
 
 //Names Of Strips 
 String strip="";
@@ -119,25 +119,12 @@ void loop() {
        }
      }
      else if(strip==actuator_pos_fw){
-     while(true){
-     actuator1_up();
-     Serial.println("Going UP" );
-     delay(1000);
-     actuator1_down();
-     Serial.println("Going DOWN" );
-     delay(1000);
-     }
-//     actuator1_stop();
-//       test2();
+     test2(actuator_pos_fw,1000); //test2 for actuator 1
+     //test3(actuator_pos_fw,1000); // test3 for actuator 2
      }
      else if(strip==actuator_pos_bw){
-     while(true){
-     actuator1_down();
-     Serial.println("Going DOWN" );
-     delay(1000);  
-   }
-     //delay(1000);
-     //actuator1_stop();
+     test2(actuator_pos_bw,1000);
+     //test3(actuator_pos_bw,1000);
      }
      else{
      //do nothing
@@ -147,7 +134,7 @@ void loop() {
    
 }
 
-void reset(){
+void reset(){ //this method resets the stepper
 
   while(check){
     StepperLeft();
@@ -177,7 +164,7 @@ void reset(){
 //}
 
 //Working
-void reset2(){
+void reset2(){ //this method resets the actuators
   Serial.println("Now Restarting....." );
 
   while(check2){
@@ -275,7 +262,7 @@ void checkUsingIR(){
        Serial.println(""); 
   }
 
-
+//Method Calls for Actions...
 void StepperRight(){
   motor.step(steps);
   Serial.print("steps:" );
@@ -319,7 +306,7 @@ void StepperLeft(){
   Serial.println("Stopping......");
   }
 
-
+//tester methods
 void test(int spd, int stepsPerRevolution, int count, int dir) {
   Serial.println("clockwise");
   motor.setSpeed(spd);
@@ -332,17 +319,29 @@ void test(int spd, int stepsPerRevolution, int count, int dir) {
   }
   delay(500);
 }
+//test2 for actuator 1
   void test2(String s,int d){
+  if (s=actuator_pos_fw){
     actuator1_up();
-//    delay(1000);
-//    actuator1_down();
-//    delay(1000);
-//    actuator1_stop();
-//        
-//    actuator2_up();
-//    delay(1000);
-//    actuator2_down();
-//    delay(1000);
-//    actuator2_stop();
-
+    delay(d);
+    actuator1_stop();
+    }
+    else if(s=actuator_pos_bw){
+    actuator1_down();
+    delay(d);
+    actuator1_stop();
+    }
+}
+//test2 for actuator 2
+  void test3(String s,int d){
+  if (s=actuator_pos_fw){
+    actuator2_up();
+    delay(d);
+    actuator2_stop();
+    }
+    else if(s=actuator_pos_bw){
+    actuator2_down();
+    delay(d);
+    actuator2_stop();
+    }
 }
