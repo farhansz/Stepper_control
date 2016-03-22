@@ -1,11 +1,24 @@
 #include <Stepper.h>
 
+//Stepper Pins
 int in1Pin = 12;
 int in2Pin = 11;
 int in3Pin = 10;
 int in4Pin = 9;
+
+//Actuator Pins
 int actuator1[] = {53, 52}; // the one that goes up and down
-int actuator2[] = {46, 47}; // the one that pushes
+int actuator2[] = {50, 51}; // the one that pushes
+
+//Motor Pins
+int motor1[] = {40, 41};
+int motor2[] = {42, 43};
+
+//Motor Strings
+String mforward ="fwd";
+String mbackward ="bwd";
+String mleft = "left";
+String mright = "right";
 
 int steps = 10; //Default value is 10
 
@@ -62,10 +75,13 @@ void setup() {
   pinMode(in3Pin, OUTPUT);
   pinMode(in4Pin, OUTPUT);
   
-  int i; //for actuators
+  int i; //for actuators & motors
   for( i = 0; i < 2; i++){
     pinMode(actuator1[i], OUTPUT);
     pinMode(actuator2[i], OUTPUT);
+    
+    pinMode(motor1[i], OUTPUT);
+    pinMode(motor2[i], OUTPUT);
     }
 
   motor.setSpeed(10); //Default value = 10
@@ -130,6 +146,26 @@ void loop() {
        //test3(actuator_pos_bw,1000);
         }
      }
+     else if(strip==mforward){
+     motor_forward();
+     delay(1000);
+     motor_stop();
+     }
+     else if(strip==mbackward){
+     motor_backward();
+     delay(1000);
+     motor_stop();
+     }
+     else if(strip==mleft){
+     motor_left();  
+     delay(1000);
+     motor_stop();     
+     }
+     else if(strip==mright){
+     motor_right();
+     delay(1000);
+     motor_stop();     
+     }     
      else{
      //do nothing
      }
@@ -266,7 +302,9 @@ void checkUsingIR(){
        Serial.println(""); 
   }
 
-//Method Calls for Actions...
+//Method-Calls for Actions...
+
+//Steppers.........................
 void StepperRight(){
   motor.step(steps);
   Serial.print("steps:" );
@@ -281,13 +319,15 @@ void StepperLeft(){
   Serial.println(stepCount);
   
 }
+//........................................
 
+//Actuators...............
   void actuator1_up(){
   digitalWrite(actuator1[0], HIGH);
-  digitalWrite(actuator1[1], LOW);
+  //digitalWrite(actuator1[1], LOW);
   }
   void actuator1_down(){
-  digitalWrite(actuator1[0], LOW);
+  //digitalWrite(actuator1[0], LOW);
   digitalWrite(actuator1[1], HIGH);
   }
   void actuator1_stop(){
@@ -298,10 +338,10 @@ void StepperLeft(){
 
   void actuator2_up(){
   digitalWrite(actuator2[0], HIGH);
-  digitalWrite(actuator2[1], LOW);
+  //digitalWrite(actuator2[1], LOW);
   }
   void actuator2_down(){
-  digitalWrite(actuator2[0], LOW);
+  //digitalWrite(actuator2[0], LOW);
   digitalWrite(actuator2[1], HIGH);
   }
   void actuator2_stop(){
@@ -309,6 +349,48 @@ void StepperLeft(){
   digitalWrite(actuator2[1], LOW);
   Serial.println("Stopping......");
   }
+//...............................
+
+//Motor
+  void motor_forward(){
+  digitalWrite(motor1[0], HIGH);
+  //digitalWrite(motor1[1], LOW);
+  
+  digitalWrite(motor2[0], HIGH);
+  //digitalWrite(motor2[1], LOW);
+  }
+  
+  void motor_backward(){
+  //digitalWrite(motor1[0], LOW);
+  digitalWrite(motor1[1], HIGH);
+  
+  //digitalWrite(motor2[0], LOW);
+  digitalWrite(motor2[1], HIGH);  
+  }
+  
+  void motor_left(){
+  digitalWrite(motor1[0], HIGH);
+  
+  digitalWrite(motor2[1], HIGH);
+  }
+  
+  void motor_right(){
+  digitalWrite(motor1[1], HIGH);
+  
+  digitalWrite(motor2[0], HIGH);
+  }
+  
+  void motor_stop(){
+  digitalWrite(motor1[0], LOW);
+  digitalWrite(motor1[1], LOW);
+  
+  digitalWrite(motor2[0], LOW);
+  digitalWrite(motor2[1], LOW);
+
+  }
+
+//
+
 
 //tester methods
 void test(int spd, int stepsPerRevolution, int count, int dir) {
