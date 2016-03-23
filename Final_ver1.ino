@@ -7,8 +7,8 @@ int in3Pin = 10;
 int in4Pin = 9;
 
 //Actuator Pins
-int actuator1[] = {53, 52}; // the one that goes up and down
-int actuator2[] = {50, 51}; // the one that pushes
+int actuator1[] = {52, 53}; // the one that goes up and down
+int actuator2[] = {51, 50}; // the one that pushes
 
 //Motor Pins
 int motor1[] = {40, 41};
@@ -25,7 +25,7 @@ int steps = 10; //Default value is 10
 //Names Of Strips 
 String strip="";
 String strip1="Strip1";
-int strip1loc=5;//31
+int strip1loc=32;//31
 String strip2="Strip2";
 int strip2loc=95;
 String strip3="Strip3";
@@ -98,12 +98,21 @@ void loop() {
     
      strip = Serial.readString();
       if(strip==strip1){
+       Serial.println("Resetting Actuators, switch: 2..." ); 
+       delay(2000);
        reset2();
+       delay(2000);
+       Serial.println("Resetting Steppers, switch: 1..." );
        reset();
+       delay(2000);
        while(stepCount!=strip1loc)
          StepperRight();
        delay(2000);
+       Serial.println("Initiating delay count, switch: 3..." );
+       delay(3000);
        findDelay();
+       delay(2000);
+       Serial.println("Resetting Actuators again, switch: 2..." );
        delay(2000);
        reset2();
        delay(2000);
@@ -113,7 +122,14 @@ void loop() {
        delay(c);
        actuator1_stop();
        Serial.println("Reached desired column" );
-       checkUsingIR();    
+       checkUsingIR();
+       delay(5000);
+       Serial.println("Going to push" );
+       actuator2_up();
+       delay(2500);
+       actuator2_down();
+       delay(2500);
+       actuator2_stop();    
      }
      
      
@@ -135,16 +151,21 @@ void loop() {
        }
      }
      else if(strip==actuator_pos_fw){
-     while (true){
-       test2(actuator_pos_fw,1000); //test2 for actuator 1
-       //test3(actuator_pos_fw,1000); // test3 for actuator 2
-       }
+     //while (true){
+       //actuator2_up();
+       //delay(1000);
+       //actuator2_down();
+       //delay(1000);
+       //actuator2_stop();
+       //test2(actuator_pos_fw,1000); //test2 for actuator 1
+       test3(actuator_pos_fw,1500); // test3 for actuator 2
+       //}
      }
      else if(strip==actuator_pos_bw){
-      while (true){
-       test2(actuator_pos_bw,1000);
-       //test3(actuator_pos_bw,1000);
-        }
+      //while (true){
+       //test2(actuator_pos_bw,1000);
+       test3(actuator_pos_bw,1500);
+       // }
      }
      else if(strip==mforward){
      motor_forward();
@@ -178,6 +199,7 @@ void reset(){ //this method resets the stepper
 
   while(check){
     StepperLeft();
+    //StepperRight();
     if(digitalRead(resetPin) == LOW){
       check=false;
     }
@@ -205,7 +227,7 @@ void reset(){ //this method resets the stepper
 
 //Working
 void reset2(){ //this method resets the actuators
-  Serial.println("Now Restarting....." );
+  Serial.println("Now Restarting Actuators....." );
 
   while(check2){
   actuator1_down();
@@ -216,7 +238,7 @@ void reset2(){ //this method resets the actuators
   }
   actuator1_stop();
   actuator2_stop();
-  Serial.println("Restarting Completed ! !" );
+  Serial.println("Restarting Actuators Completed ! !" );
   check2=true;
 }
 
@@ -307,7 +329,7 @@ void checkUsingIR(){
 //Steppers.........................
 void StepperRight(){
   motor.step(steps);
-  Serial.print("steps:" );
+  Serial.print("Right steps:" );
   Serial.println(stepCount);
   stepCount++;
   delay(500);
@@ -324,11 +346,13 @@ void StepperLeft(){
 //Actuators...............
   void actuator1_up(){
   digitalWrite(actuator1[0], HIGH);
-  //digitalWrite(actuator1[1], LOW);
+  digitalWrite(actuator1[1], LOW);
+  Serial.println("Going Up......");
   }
   void actuator1_down(){
-  //digitalWrite(actuator1[0], LOW);
+  digitalWrite(actuator1[0], LOW);
   digitalWrite(actuator1[1], HIGH);
+  Serial.println("Going Down......");
   }
   void actuator1_stop(){
   digitalWrite(actuator1[0], LOW);
@@ -338,16 +362,18 @@ void StepperLeft(){
 
   void actuator2_up(){
   digitalWrite(actuator2[0], HIGH);
-  //digitalWrite(actuator2[1], LOW);
-  }
+  digitalWrite(actuator2[1], LOW);
+  Serial.println("Act2 Going Up......");  
+}
   void actuator2_down(){
-  //digitalWrite(actuator2[0], LOW);
+  digitalWrite(actuator2[0], LOW);
   digitalWrite(actuator2[1], HIGH);
+  Serial.println("Act2 Going Down......");
   }
   void actuator2_stop(){
   digitalWrite(actuator2[0], LOW);
   digitalWrite(actuator2[1], LOW);
-  Serial.println("Stopping......");
+  Serial.println("Act2 Stopping......");
   }
 //...............................
 
@@ -407,25 +433,25 @@ void test(int spd, int stepsPerRevolution, int count, int dir) {
 }
 //test2 for actuator 1
   void test2(String s,int d){
-  if (s=actuator_pos_fw){
+  if (s==actuator_pos_fw){
     actuator1_up();
     delay(d);
     actuator1_stop();
     }
-    else if(s=actuator_pos_bw){
+    else if(s==actuator_pos_bw){
     actuator1_down();
     delay(d);
     actuator1_stop();
     }
 }
-//test2 for actuator 2
+//test3 for actuator 2
   void test3(String s,int d){
-  if (s=actuator_pos_fw){
+  if (s==actuator_pos_fw){
     actuator2_up();
     delay(d);
     actuator2_stop();
     }
-    else if(s=actuator_pos_bw){
+    else if(s==actuator_pos_bw){
     actuator2_down();
     delay(d);
     actuator2_stop();
