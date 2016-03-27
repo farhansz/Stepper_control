@@ -7,8 +7,8 @@ int in3Pin = 10;
 int in4Pin = 9;
 
 //Actuator Pins
-int actuator1[] = {52, 53}; // the one that goes up and down
-int actuator2[] = {51, 50}; // the one that pushes
+int actuator1[] = {53, 52}; // the one that goes up and down
+int actuator2[] = {50, 51}; // the one that pushes
 
 //Motor Pins
 int motor1[] = {40, 41};
@@ -25,7 +25,7 @@ int steps = 10; //Default value is 10
 //Names Of Strips 
 String strip="";
 String strip1="Strip1";
-int strip1loc=32;//31
+int strip1loc=40;//31
 String strip2="Strip2";
 int strip2loc=95;
 String strip3="Strip3";
@@ -106,7 +106,7 @@ void loop() {
        reset();
        delay(2000);
        while(stepCount!=strip1loc)
-         StepperRight();
+         StepperLeft();
        delay(2000);
        Serial.println("Initiating delay count, switch: 3..." );
        delay(3000);
@@ -118,7 +118,7 @@ void loop() {
        delay(2000);
        Serial.println("Going For Column using delay..." );
        int c = actuatorDelay * actuatorCount;
-       actuator1_up();
+       actuator1_down();
        delay(c);
        actuator1_stop();
        Serial.println("Reached desired column" );
@@ -126,9 +126,9 @@ void loop() {
        delay(5000);
        Serial.println("Going to push" );
        actuator2_up();
-       delay(2500);
+       delay(2000);
        actuator2_down();
-       delay(2500);
+       delay(2000);
        actuator2_stop();    
      }
      
@@ -198,8 +198,8 @@ void loop() {
 void reset(){ //this method resets the stepper
 
   while(check){
-    StepperLeft();
-    //StepperRight();
+    //StepperLeft();
+    StepperRight();
     if(digitalRead(resetPin) == LOW){
       check=false;
     }
@@ -228,9 +228,12 @@ void reset(){ //this method resets the stepper
 //Working
 void reset2(){ //this method resets the actuators
   Serial.println("Now Restarting Actuators....." );
+  if(digitalRead(resetPin2) == LOW){
+      check2=false;
+  }
 
   while(check2){
-  actuator1_down();
+  actuator1_up();
   actuator2_down();
     if(digitalRead(resetPin2) == LOW){
       check2=false;
@@ -269,7 +272,7 @@ void findDelay(){
   
   //delay(10000);
   while(check3){
-    actuator1_up();
+    actuator1_down();
     //actuator2_up();
     if(digitalRead(resetPin3) == LOW){
       check3=false;
@@ -329,17 +332,20 @@ void checkUsingIR(){
 //Steppers.........................
 void StepperRight(){
   motor.step(steps);
-  Serial.print("Right steps:" );
+  //Serial.print("Right steps:" );
+  Serial.print("Going for strips using steps:" );
   Serial.println(stepCount);
-  stepCount++;
-  delay(500);
+  //stepCount++;
+  //delay(500);
 }
 
 void StepperLeft(){
   motor.step(-steps);
-  Serial.print("Going for strips using steps:" );
+  //Serial.print("Going for strips using steps:" );
+  Serial.print("Left steps:" );
   Serial.println(stepCount);
-  
+  stepCount++;
+  delay(500);
 }
 //........................................
 
