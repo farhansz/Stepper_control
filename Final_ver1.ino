@@ -103,8 +103,10 @@ void loop() {
        while(stepCount!=strip1loc)
          StepperLeft();
        delay(2000);
+       Serial.println("Delay Finding Iniatilization..." );
        findDelay();
        delay(2000);
+       Serial.println("Going up to reset..." );
        reset2();
        delay(2000);
        Serial.println("Going For Column using delay..." );
